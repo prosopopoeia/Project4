@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import datetime
 
 
 class User(AbstractUser):
@@ -7,9 +8,9 @@ class User(AbstractUser):
     
 class Post(models.Model):
     author=models.ForeignKey("User", on_delete=models.CASCADE)
-    subect=models.CharField(max_length=255)
+    subject=models.CharField(max_length=255)
     body=models.TextField(blank=True)
-    timestamp=models.DateTimeField(max_length=255)
+    timestamp=models.DateTimeField(default=datetime.date.today)
     
 class Following(models.Model):
     follower=models.ForeignKey("User", on_delete=models.CASCADE, related_name="networkFollowingUser")

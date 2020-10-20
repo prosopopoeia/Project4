@@ -1,15 +1,31 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from network.forms import NewPostForm
+from .models import User, Post
+from django.contrib.auth.decorators import login_required
 
-from .models import User
+from django.views.decorators.csrf import csrf_exempt
 
 
-def index(request):
-    return render(request, "network/index.html")
-
+def index(request):    
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+       
+    return displayAllPosts(request) 
+    
+def displayAllPosts(request):
+    vallposts = Post.objects.order_by("-timestamp")    
+    
+    form = NewPostForm()
+    
+    return render(request, "network/index.html", {    
+        "dAllposts" : vallposts,        
+        "post_form" : form
+    })
 
 def login_view(request):
     if request.method == "POST":
@@ -22,6 +38,7 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
+            request.session["uname"] = username
             return HttpResponseRedirect(reverse("index"))
         else:
             return render(request, "network/login.html", {
@@ -58,6 +75,30 @@ def register(request):
                 "message": "Username already taken."
             })
         login(request, user)
+        request.session["uname"] = username
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+@csrf_exempt
+@login_required
+def newpost(request):
+
+    
+    data = json.loads(request.body)
+    
+    
+    try:
+        vusername = request.session.get("uname")
+        thisUser = User.objects.get(username=vusername)
+    except:
+        thisUser = User.objects.get(username="jj")
+    Post.objects.create(
+        author=thisUser, 
+        subject=data["subject"], 
+        body=data["body"]) 
+    
+    return displayAllPosts(request) 
+    
+    
+    

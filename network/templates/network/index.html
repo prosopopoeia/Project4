@@ -1,19 +1,32 @@
 {% extends "network/layout.html" %}
 
 {% block body %}
-	<div id="create-post-view">
+	<div id="post-option">
+		<a id="create-post" class="nav-link" ><strong>New Post</strong></a>
+    </div>
+	<div id="post-form-container">
+		
+		<form id="post-form" method="post">
+			
+			{{ post_form.as_p }}
+			<input type="submit" value="Submit" id="sub-btn" class="btn btn-primary"/>
+		</form>
 	</div>
 	
-	<div id="all-posts-view">
+	
+	
+	<div class="container-fluid" id="all-posts">
+		{% for post in dAllposts %}
+			<div class="blog-post" id="post-block">
+				<div class="blog-post-title" id="auth">{{ post.subject }} </div>
+				
+				<div class="blog-post-meta" id="auth">Posted on: {{ post.timestamp }} by: {{ post.author }}</div>				
+				
+				<div class="well" id="auth"> {{ post.body }} </div>
+			</div>
+		{% endfor %}
+	
 	</div>
 	
-	<div id="profile-view">
-	</div>
-	
-	<div id="users-posts-view">
-	</div>
-	
-	<div id="edit-post-view">
-	</div>
-	
+	<div>This is {{ testData }}</div>
 {% endblock %}
