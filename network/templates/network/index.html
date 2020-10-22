@@ -1,18 +1,22 @@
 {% extends "network/layout.html" %}
+{% load static %}
 
 {% block body %}
-	<div id="post-option">
-		<a id="create-post" class="nav-link" ><strong>New Post</strong></a>
-    </div>
-	<div id="post-form-container">
-		
-		<form id="post-form" method="post">
-			
-			{{ post_form.as_p }}
-			<input type="submit" value="Submit" id="sub-btn" class="btn btn-primary"/>
-		</form>
-	</div>
 	
+	{% if form %}
+		<div id="post-option">
+			<a id="create-post" class="nav-link" ><strong>New Post</strong></a>
+		</div>
+	
+		<div id="post-form-container">
+		
+			<form id="post-form" method="post">
+			
+				{{ post_form.as_p }}
+				<input type="submit" value="Submit" id="sub-btn" class="btn btn-primary"/>
+			</form>
+		</div>
+	{% endif %}
 	
 	
 	<div class="container-fluid" id="all-posts">
@@ -20,7 +24,9 @@
 			<div class="blog-post" id="post-block">
 				<div class="blog-post-title" id="auth">{{ post.subject }} </div>
 				
-				<div class="blog-post-meta" id="auth">Posted on: {{ post.timestamp }} by: {{ post.author }}</div>				
+				<div class="blog-post-meta" id="auth">Posted on: {{ post.timestamp }} by: 
+				<a href="{% url 'profile_post' post.author %}"> {{ post.author }}</a>
+				</div>				
 				
 				<div class="well" id="auth"> {{ post.body }} </div>
 			</div>
@@ -29,4 +35,10 @@
 	</div>
 	
 	<div>This is {{ testData }}</div>
+	<div>{{ td2 }}</div>
+	<div>{{ td3 }}</div>
+{% endblock %}
+
+{% block script %}
+	 <script src="{% static 'network/index.js' %}"></script>
 {% endblock %}

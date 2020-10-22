@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
 	document.querySelector('#create-post').addEventListener('click', () => toggleForm());
 	var formDiv = document.querySelector('#post-form-container');
 	formDiv.style.display = 'none';
-	
+		
 	postForm = document.querySelector('#post-form');
 	postForm.addEventListener('submit', function(event) {
 		event.preventDefault();
@@ -30,8 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
 		});
 	});
 
-	
-	
+		
 });//end addEventListener
 
 function toggleForm() {

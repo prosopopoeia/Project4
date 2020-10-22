@@ -11,4 +11,8 @@ urlpatterns = [
     
     #API
     path("newpost", views.newpost, name="newpost"),
+    path("profile_post/<str:puser>", views.profile_post, name="profile_post"),
+    path("add_follower", views.add_follower, name="add_follower"),
+    #path("profile_post/add_follower", views.add_follower, name="add_follower"),
+    path("following", views.following, name="following"),
 ]
