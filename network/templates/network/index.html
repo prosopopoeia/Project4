@@ -3,7 +3,6 @@
 
 {% block body %}
 	
-	{% if form %}
 		<div id="post-option">
 			<a id="create-post" class="nav-link" ><strong>New Post</strong></a>
 		</div>
@@ -16,22 +15,38 @@
 				<input type="submit" value="Submit" id="sub-btn" class="btn btn-primary"/>
 			</form>
 		</div>
-	{% endif %}
 	
 	
-	<div class="container-fluid" id="all-posts">
-		{% for post in dAllposts %}
-			<div class="blog-post" id="post-block">
+	{% for post in dpage_obj %} 
+		<div class="blog-post" id="pagination-block">
 				<div class="blog-post-title" id="auth">{{ post.subject }} </div>
 				
 				<div class="blog-post-meta" id="auth">Posted on: {{ post.timestamp }} by: 
 				<a href="{% url 'profile_post' post.author %}"> {{ post.author }}</a>
-				</div>				
-				
+				</div>	{{ current_user }}
+				{% if post.author.username == current_user %}
+				<div id="edit-div">
+					<a href="{% url 'profile_post' post.author %}"> Edit post </a>			
+				</div>
+				{% endif %}
 				<div class="well" id="auth"> {{ post.body }} </div>
 			</div>
-		{% endfor %}
 	
+	{% endfor %}
+	
+	<div class="pagination">
+		{% if dpage_obj.has_previous %}
+			<a href="?page=1">first</a>
+			<a href="?page={{ dpage_obj.previous_page_number }}">previous</a>
+		{% endif %}
+		
+		Page {{ dpage_obj.number }} of  {{ dpage_obj.paginator.num_pages }}.
+		
+		{% if dpage_obj.has_next %}
+			<a href="?page={{ dpage_obj.next_page_number }}">next -> </a> 
+			<a href="?page={{ dpage_obj.paginator.num_pages }}"> <-last</a>
+		{% endif %}
+		
 	</div>
 	
 	<div>This is {{ testData }}</div>

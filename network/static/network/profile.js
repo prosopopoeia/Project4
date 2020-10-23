@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
 	
-	var followDiv = document.querySelector('#follow-message');
-	followDiv.style.display = 'none';
+	/* var followDiv = document.querySelector('#follow-message');
+	followDiv.style.display = 'none'; */
 
 	followForm = document.querySelector('#follow-form');
 	followForm.addEventListener('submit', function(event) {

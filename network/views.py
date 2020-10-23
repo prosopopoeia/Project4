@@ -7,24 +7,28 @@ from django.urls import reverse
 from network.forms import NewPostForm
 from .models import User, Post, Following, Likes
 from django.contrib.auth.decorators import login_required
-from django.db.models import F, Q
+from django.core.paginator import Paginator
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 
 
 def index(request):    
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
-       
-    return displayAllPosts(request) 
+     
+    vallposts = Post.objects.order_by("-timestamp")   
+    return displayAllPosts(request, vallposts) 
     
-def displayAllPosts(request):
-    vallposts = Post.objects.order_by("-timestamp")    
-    
+def displayAllPosts(request, iterable_collection):
+      
+    paginator = Paginator(iterable_collection, 10)
+    page_number = request.GET.get('page')
+    vpage_obj = paginator.get_page(page_number)
     form = NewPostForm()
     
     return render(request, "network/index.html", {    
-        "dAllposts" : vallposts,        
-        "post_form" : form
+        "post_form" : form,
+        "dpage_obj": vpage_obj,
+        "current_user" : request.session.get("uname")
     })
 
 def login_view(request):
@@ -126,6 +130,7 @@ def profile_post(request, puser):
     })
     
 @csrf_exempt
+@login_required
 def add_follower(request):
     data = json.loads(request.body)
     vusername = request.session.get("uname")
@@ -139,25 +144,11 @@ def add_follower(request):
         Following.objects.create(followedby=vthis_user, following=vother_user)
     return displayAllPosts(request)
   
+@login_required
 def following(request):
     vusername = request.session.get("uname")
     vthis_user = User.objects.get(username=vusername)
-    #Select Posts where Post.author = Following.following and Following.followedby = this_user
-    #all_followed_posts = Post.objects.filter(following__followedby=vthis_user, following__following=F('author'))
     
-    tlist = Post.objects.all()
-    list_of_followedbys = Following.objects.filter(followedby=vthis_user)
-    lister = Post.objects.filter(author__following__followedby=vthis_user)
-    # post_list = list_of_authors.entry_set.filter(
-    
-    # all_followed_posts = Post.objects.filter(au)
-    
-    # followed_users = Following.objects.filter(followedby=vthis_user)
-    
-    return render(request, "network/index.html", {    
-        "dAllposts" : lister,
-        "testData" : lister,
-        "td2" : list_of_followedbys,
-        "td3" : tlist,
-        #"post_form" : form
-    })
+    list_of_followed_posts = Post.objects.filter(author__following__followedby=vthis_user)
+        
+    return displayAllPosts(request, list_of_followed_posts)
