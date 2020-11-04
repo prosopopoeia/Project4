@@ -2,7 +2,7 @@
 {% load static %}
 
 {% block body %}
-	<div id="stats">
+	<div class="container" id="stats">
 		<h2>Various user stats for {{ duser_name }}</h2>
 		<h4> {{ duser_name }} has {{ dFollowerCount }} followers</h4>
 		<h4> and is following {{ dFollowingCount }} users</h4>
@@ -25,19 +25,21 @@
 			<div id="follow-message">Follower added</div>
 		{% endif %}
 	</div>
-	<div class="container-fluid" id="all-posts">
+	
 		{% for post in dAllposts %}
-			<div class="blog-post" id="post-block">
+		<div class="container-fluid bg-dark text-white border" id="all-posts">
+			<div class="blog-post " id="post-block">
 				<div class="blog-post-title" id="auth">{{ post.subject }} </div>
 				
 				<div class="blog-post-meta" id="auth">Posted on: {{ post.timestamp }} by: 
 				<a href="{% url 'profile_post' post.author %}"> {{ post.author }}</a>
 				</div>				
 				
-				<div class="well" id="auth"> {{ post.body }} </div>
+				<div class="well text-dark" id="auth"> {{ post.body }} </div>
 			</div>
+		</div>
 		{% endfor %}
-	</div>
+	
 	
 {% endblock %}
 

@@ -1,0 +1,29 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<br>
+
+<br>
+	<div id="stats">
+		
+		<br /><br />
+		<div id="emsg"></div>
+		<br /><br />
+		<form method="post" id="post-form" >			
+		
+			<textarea  cols="200"  id="ebody">{{ current_post.body }}</textarea>
+			<br />
+			<input type="hidden" id="eid" value="{{current_post.id}}" />
+			
+			<input type="submit" value="Save" id="sub-btn" class="btn btn-primary"/>
+		</form> 
+		
+	
+	
+{% endblock %}
+	 
+{% block script %}
+	 <script src="{% static 'network/edit.js' %}"></script>
+{% endblock %}

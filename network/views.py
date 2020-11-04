@@ -1,7 +1,7 @@
 import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from network.forms import NewPostForm
@@ -30,6 +30,53 @@ def displayAllPosts(request, iterable_collection):
         "dpage_obj": vpage_obj,
         "current_user" : request.session.get("uname")
     })
+
+@login_required
+def editpost(request, pid=None):    
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    ppost = "no post"
+    if request.method == "POST":
+        data = json.loads(request.body)
+        val = data["feid"]
+        vpost = data["fbody"]
+        ppost = request.body
+        # vpost.body = request.POST.get("ebody")
+        # vpost.save()
+        #val = "totes"
+    else:
+        vpost = Post.objects.get(id=pid) 
+    form = NewPostForm()
+    val = request.POST.get("feid")
+    # if val is None:
+        # val = "failure"
+    
+    
+    return render(request, "network/edit.html", {    
+        "edit_form" : form,
+        "test" : val,
+        "current_post" : vpost,
+        "clip" : ppost
+    })
+
+def editpostb(request):    
+    if not request.user.is_authenticated:
+        return HttpResponseRedirect(reverse("login"))
+    ppost = "no post"
+    if request.method == "POST":
+        data = json.loads(request.body)
+        vid = data["feid"]
+        vbody = data["fbody"]
+        #ppost = request.body
+        vpost = Post.objects.get(id=vid) 
+        vpost.body = vbody
+        vpost.save()
+        return JsonResponse({"message": "success"}, status=201)
+        
+    else:
+        return JsonResponse({"error": "POST request required." }, status=400)
+        
+   
 
 def login_view(request):
     if request.method == "POST":
