@@ -148,6 +148,11 @@ def newpost(request):
     return displayAllPosts(request) 
     
 @login_required
+def likepost(request):
+        data = json.loads(request.body)
+        
+    
+@login_required
 def profile_post(request, puser):
     try:
         vuser = User.objects.get(username=puser)

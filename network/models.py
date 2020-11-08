@@ -19,4 +19,5 @@ class Following(models.Model):
 class Likes(models.Model):
     liker=models.ForeignKey(User, on_delete=models.CASCADE)
     liked=models.ForeignKey(Post, on_delete=models.CASCADE)
+    count = models.IntegerField(default=0)
     

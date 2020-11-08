@@ -21,10 +21,10 @@
 					{% endif %}
 				</form>
 			
-			
+			</div>
 			<div id="follow-message">Follower added</div>
 		{% endif %}
-	</div>
+	
 	
 		{% for post in dAllposts %}
 		<div class="container-fluid bg-dark text-white border" id="all-posts">
@@ -38,8 +38,9 @@
 				<div class="well text-dark" id="auth"> {{ post.body }} </div>
 			</div>
 		</div>
+		<br />
 		{% endfor %}
-	
+	</div>
 	
 {% endblock %}
 

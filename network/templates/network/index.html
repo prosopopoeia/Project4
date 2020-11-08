@@ -3,16 +3,17 @@
 
 {% block body %}
 	
+	<div id="upper_div" class="container-fluid">
 	<div id="post-option">
-		<a id="create-post" class="nav-link" ><strong>New Post</strong></a>
+		<a id="create-post" class="nav-link" ><strong>Create New Post</strong></a>
 	</div>
-	<div id="post-form-container">
+	<div class="container" id="post-form-container">
 		<form id="post-form" method="post">
 			{{ post_form.as_p }}
 			<input type="submit" value="Submit" id="sub-btn" class="btn btn-primary"/>
 		</form>
 	</div>
-	
+	</div>
 	<div id="outer_div" class="container">
 	{% for post in dpage_obj %} 
 	
@@ -24,14 +25,17 @@
 			</div>
 			
 			{% if post.author.username == current_user %}
-				<div id="edit-div">{{ post.id }}</div>
+				
 				<div>
 					<a href="{% url 'editpost' post.id %}"> Edit Post</a>
 				</div>
 			{% endif %}
 			
 			<div class="well" id="bod"> {{ post.body }} </div>
+			
+			<div><button id="likebutton" name="id" value="{{ post.id }}" type="button" class="btn btn-primary btn-xs">Like</button> </div>
 		</div>	
+		
 	{% endfor %}
 	
 	<div class="pagination">
