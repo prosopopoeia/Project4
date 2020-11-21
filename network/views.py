@@ -14,9 +14,17 @@ from django.views.decorators.csrf import csrf_exempt, csrf_protect
 def index(request):    
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
-     
-    vallposts = Post.objects.order_by("-timestamp")   
-    return displayAllPosts(request, vallposts) 
+    
+    form = NewPostForm()
+    return render(request, "network/index.html", {
+        "post_form" : form,
+        "current_user" : request.session.get("uname")        
+    })
+    
+def showall(request): 
+    vallposts = Post.objects.order_by("-timestamp").all() 
+    return JsonResponse([vallpost.serialize() for vallpost in vallposts], safe=False)
+    #return displayAllPosts(request, vallposts) 
     
 def displayAllPosts(request, iterable_collection):
       
@@ -25,7 +33,8 @@ def displayAllPosts(request, iterable_collection):
     vpage_obj = paginator.get_page(page_number)
     form = NewPostForm()
     
-    return render(request, "network/index.html", {    
+    
+    render(request, "network/index.html", {    
         "post_form" : form,
         "dpage_obj": vpage_obj,
         "current_user" : request.session.get("uname")
@@ -40,10 +49,7 @@ def editpost(request, pid=None):
         data = json.loads(request.body)
         val = data["feid"]
         vpost = data["fbody"]
-        ppost = request.body
-        # vpost.body = request.POST.get("ebody")
-        # vpost.save()
-        #val = "totes"
+        ppost = request.body        
     else:
         vpost = Post.objects.get(id=pid) 
     form = NewPostForm()
@@ -150,6 +156,26 @@ def newpost(request):
 @login_required
 def likepost(request):
         data = json.loads(request.body)
+        vpostid = data["postid"]
+        likedPost = Post.objects.get(id=vpostid)
+        vusername = request.session.get("uname")
+        vuser = User.objects.get(username=vusername)
+        #if this is the first time the post has been liked...
+        try:
+            like_object = Likes.objects.get(liked=likedPost, liker=vuser)
+            like_object.count += 1
+            like_object.save()
+        except:
+            Likes.objects.create(
+                liker=vuser,
+                liked=likedPost,
+                count=1)
+        
+        return JsonResponse({"message": "liked"}, status=201) 
+        
+ 
+        
+        
         
     
 @login_required

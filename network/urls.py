@@ -17,5 +17,6 @@ urlpatterns = [
     path("following", views.following, name="following"),
     path("editpost/<int:pid>", views.editpost, name="editpost"),
     path("editpost/editpostb", views.editpostb, name="editpostb"),
-    path("likepost", views.likepost, name="likepost"),
+    path("likepost", views.likepost, name="likepost"),    
+    path("showall", views.showall, name="showall"),
 ]

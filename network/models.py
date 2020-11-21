@@ -12,6 +12,15 @@ class Post(models.Model):
     body=models.TextField(blank=True)
     timestamp=models.DateTimeField(default=datetime.now)
     
+    def serialize(self):
+        return {
+            "id": self.id,
+            "author": self.author.username,
+            "subject": self.subject,
+            "body": self.body,
+            "timestamp": self.timestamp
+        }
+    
 class Following(models.Model):
     following=models.ManyToManyField(User, related_name="following")
     followedby=models.ManyToManyField(User, related_name="followedby")

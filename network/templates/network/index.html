@@ -15,28 +15,15 @@
 	</div>
 	</div>
 	<div id="outer_div" class="container">
-	{% for post in dpage_obj %} 
 	
-		<div class="blog-post" id="pagination-block">
-			<div class="blog-post-title" id="sub">{{ post.subject }} </div>				
-			<div class="blog-post-meta" id="stamp">
-				Posted on: {{ post.timestamp }} by: 
-				<a href="{% url 'profile_post' post.author %}"> {{ post.author }}</a>
-			</div>
-			
-			{% if post.author.username == current_user %}
-				
-				<div>
-					<a href="{% url 'editpost' post.id %}"> Edit Post</a>
-				</div>
-			{% endif %}
-			
-			<div class="well" id="bod"> {{ post.body }} </div>
-			
-			<div><button id="likebutton" name="id" value="{{ post.id }}" type="button" class="btn btn-primary btn-xs">Like</button> </div>
-		</div>	
+		<table class="table">
 		
-	{% endfor %}
+		  <tbody id="target-row">
+			<!-- post data	 -->
+		  </tbody>
+		</table>
+		
+     </div>
 	
 	<div class="pagination">
 		{% if dpage_obj.has_previous %}
@@ -54,8 +41,6 @@
 	</div>
 	</div>
 	
-
-
 {% endblock %}
 
 {% block script %}
