@@ -1,0 +1,75 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block body %}
+
+<div class="row">
+<div class="container"> 
+  
+  <h1>Bootstrap 3 SortTable</h1> 
+  <table class="table" id="postTable">
+	<thead>
+		<tr>
+			<th scope="col">Title</th>
+			
+		</tr>
+	</thead>
+	 <tbody id="target-row">
+		<tr>
+			<td >Parent Adolescent Relationship Factors and Adolescent Outcomes Among High-Risk Families.</td>
+			
+		</tr>
+		<tr>
+			<td >Prescription Drugs and Nutrient Depletion: How Much is Known?</td>
+			
+		</tr>
+		<tr>
+			<td >Relation of Adiponectin with Body Adiposity and Bone Mineral Density in Older Women.</td>
+			
+		</tr>
+		<tr>
+			<td >Benefits of whole-body vibration training on arterial function and muscle strength in young overweight/obese women.</td>
+			
+		</tr>
+		<tr>
+			<td >Overexpression of PGC-1α Increases Peroxisomal and Mitochondrial Fatty Acid Oxidation in Human Primary Myotubes.</td>
+			
+		</tr>
+		<tr>
+			<td >Observed Parenting in Families exposed to Homelessness: Child and Parent Characteristics as Predictors of Response to the Early Risers Intervention.</td>
+			
+		</tr>
+		<tr>
+			<td >Testing the impact of sliding versus deciding in cyclical and non cyclical relationships.</td>
+			
+		</tr>
+		<tr>
+			<td >Personal and Cultural Identity Development in Recently Immigrated Hispanic Adolescents: Links With Psychosocial Functioning.</td>
+			
+		</tr>
+		<tr>
+			<td >School burnout and intimate partner violence: The role of self-control.</td>
+			
+		</tr>
+		<tr>
+			<td >Efficacy Of The Repetitions In Reserve-Based Rating Of Perceived Exertion For The Bench Press In Experienced And Novice Benchers.</td>
+			
+		</tr>
+		<tr>
+			<td >Exercise training reverses age-induced diastolic dysfunction and restores coronary microvascular function.</td>
+			
+		</tr>
+		
+		
+	</tbody>
+</table>
+</div>
+</div>
+{% endblock %}
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.12/js/dataTables.bootstrap.min.js"></script>
+
+<script src="{% static 'network/index.js' %}"></script>
+{% endblock %}

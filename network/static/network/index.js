@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	//var likeButton = document.querySelector('#likebutton');
 	//likeButton.addEventListener('click', likePost);
 	initIndexDisplay();
+	//$('#postTable').DataTable();
+	//$('#postTable').DataTable({"searching":false, "paging":"simple"});
 	
 });//end addEventListener
 
@@ -27,17 +29,21 @@ function initIndexDisplay() {
 			//console.log(posts[index]);
 			displayPosts(posts[index++]);
 		}
-	})
+		$('#postTable').DataTable({
+			"searching":false, 
+			"paging":"simple",
+			"lengthChange": false,
+			"ordering": false});
+	});
 }
 
 function displayPosts(post) {	
 	postRows = document.querySelector('#target-row');
 	const tr1 = document.createElement('tr');
-	const tr2 = document.createElement('tr');
-	const tr3 = document.createElement('tr');
 	const td1 = document.createElement('td');
-	const td2 = document.createElement('td');
-	const td3 = document.createElement('td');
+	const attr = document.createAttribute('data-table-header');
+	attr.value = "post";
+	td1.setAttributeNode(attr);
 	const br = document.createElement('br');
 	const h1 = document.createElement('h1');
 	const div1 = document.createElement('div');
@@ -52,19 +58,11 @@ function displayPosts(post) {
 	td1.append(div1);
 	td1.append(br);
 	td1.append(div2);
-	//td1.innerHTML = `${post['subject']} <br> Posted by ${post['author']} on ${post['timestamp']}`;
-	//td2.innerHTML = `Posted by ${post['author']} on ${post['timestamp']}`;
-	//td3.innerHTML = `${post['body']}`;
 	
 	tr1.append(td1);
-	//tr1.append(br);
-	//tr1.append(td2);
-//	tr2.append(td2);
-	tr3.append(td3);
 	postRows.append(tr1);
-	postRows.append(tr2);
-	postRows.append(tr3);
 	postRows.append(br);
+	
 }
 
 function createPost(event) {
