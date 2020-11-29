@@ -40,6 +40,29 @@
 		</div>
 		<br />
 		{% endfor %}
+		
+		<div class="pagination">
+			<span class="step-links">
+				{% if dAllposts.has_previous %}
+					<ul class="pagination">
+						<li class="page-item"><a href="?page=1">&laquo; first</a></li>
+						<li class="page-item"><a href="?page={{ dAllposts.previous_page_number }}">previous</a></li>
+					</ul>
+				{% endif %}
+			
+				<span class="current">
+					Page {{ dAllposts.number }} of {{ dAllposts.paginator.num_pages }}.
+				</span>
+
+				{% if dAllposts.has_next %}
+					<ul class="pagination">
+						<li class="page-item"><a href="?page={{ dAllposts.next_page_number }}">next</a></li>
+						<li class="page-item"><a href="?page={{ dAllposts.paginator.num_pages }}">last &raquo;</a></li>
+					</ul>
+				{% endif %}
+			</span>
+</div>
+		
 	</div>
 	
 {% endblock %}

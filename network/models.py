@@ -22,8 +22,8 @@ class Post(models.Model):
         }
     
 class Following(models.Model):
-    following=models.ManyToManyField(User, related_name="following")
-    followedby=models.ManyToManyField(User, related_name="followedby")
+    following=models.ForeignKey(User, related_name="following", on_delete=models.CASCADE)
+    followedby=models.ForeignKey(User, related_name="followedby", on_delete=models.CASCADE)
 
 class Likes(models.Model):
     liker=models.ForeignKey(User, on_delete=models.CASCADE)

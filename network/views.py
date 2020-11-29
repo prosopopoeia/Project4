@@ -69,10 +69,10 @@ def editpostb(request):
     if not request.user.is_authenticated:
         return HttpResponseRedirect(reverse("login"))
     ppost = "no post"
-    if request.method == "POST":
+    if request.method == "PUT":
         data = json.loads(request.body)
-        vid = data["feid"]
-        vbody = data["fbody"]
+        vid = data["jid"]
+        vbody = data["jbody"]
         #ppost = request.body
         vpost = Post.objects.get(id=vid) 
         vpost.body = vbody
@@ -172,11 +172,6 @@ def likepost(request):
                 count=1)
         
         return JsonResponse({"message": "liked"}, status=201) 
-        
- 
-        
-        
-        
     
 @login_required
 def profile_post(request, puser):
@@ -198,8 +193,13 @@ def profile_post(request, puser):
     except:
         already_following = False
     
+    paginator = Paginator(vusers_posts, 10)
+    page_number = request.GET.get('page')
+    vpage_obj = paginator.get_page(page_number)
+    
+    
     return render(request, "network/profile.html", {    
-        "dAllposts" : vusers_posts,
+        "dAllposts" : vpage_obj,
         "dFollowerCount" : Following.objects.filter(following=vuser).count(),
         "dFollowingCount" : Following.objects.filter(followedby=vuser).count(),
         "duser_name" : puser,
@@ -212,15 +212,25 @@ def profile_post(request, puser):
 def add_follower(request):
     data = json.loads(request.body)
     vusername = request.session.get("uname")
-    vthis_user = User.objects.get(username=vusername)
-    vuser_tobe_followed = data.get("username")
-    vother_user = User.objects.get(username=vuser_tobe_followed)
     try:
-        exists = Following.objects.get(followedby=vthis_user, following=vother_user)
-        exists.delete()
+        vthis_user = User.objects.get(username=vusername)
+        vuser_tobe_followed = data.get("username")
+        vother_user = User.objects.get(username=vuser_tobe_followed)
     except:
+        return JsonResponse({
+            "message": "no such user"}, status=500)      
+        
+    #if already following and this function is called,
+    #it means we want to unfollow
+    exists = Following.objects.filter(followedby=vthis_user, following=vother_user).first()
+    if exists is not None:
+        exists.delete()
+    else:
         Following.objects.create(followedby=vthis_user, following=vother_user)
-    return displayAllPosts(request)
+    
+    return JsonResponse({
+        "message": "success"}, status=201)
+  
   
 @login_required
 def following(request):
