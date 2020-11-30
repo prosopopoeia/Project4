@@ -112,11 +112,18 @@ function displayPosts(post) {
 	const editDiv = document.createElement('div');
 	
 	const likeButton = document.createElement('button');
-	//const buttonStyle = document.createAttribute('style');
-	//buttonStyle.value = "url(images/up.jpg)"; 
-	//likeButton.setAttributeNode(buttonStyle);
-	likeButton.innerHTML = 'test';
+	likeButton.style.border = 'none';
+	likeButton.style.backgroundColor = "#FFFFFF";
+	likeButton.innerHTML = '<img src="static/network/images/sup.jpg" />'
 	
+	const dislikeButton = document.createElement('button');
+	dislikeButton.style.border = 'none';
+	dislikeButton.style.backgroundColor = "#FFFFFF";
+	dislikeButton.innerHTML = '<img src="static/network/images/sdown.jpg" />'
+	
+	const likeButtonsDiv = document.createElement('div');
+	likeButtonsDiv.append(likeButton);
+	likeButtonsDiv.append(dislikeButton);
 	const editButton = document.createElement('button');
 	const buttonClick = document.createAttribute('onClick');
 	const srcID = document.createAttribute('id');
@@ -150,9 +157,9 @@ function displayPosts(post) {
 	td1.append(h1);
 	td1.append(div1);
 	td1.append(div2);
-	td1.append(likeButton);
+	td1.append(likeButtonsDiv);
 	console.log(td1);
-	console.log(likeButton);
+	//console.log(likeButtonsDiv);
 	const thisUsr = document.querySelector('#usr > strong').innerHTML;
 	if (post['author'] === thisUsr)
 		td1.append(editDiv);
