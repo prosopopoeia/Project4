@@ -180,7 +180,7 @@ def profile_post(request, puser):
     except:
         return HttpResponseRedirect(reverse("index"))
     
-    vusers_posts = Post.objects.filter(author=vuser)
+    vusers_posts = Post.objects.order_by("-timestamp").filter(author=vuser)
     
     following_allowed = True
     already_following = True
@@ -231,12 +231,30 @@ def add_follower(request):
     return JsonResponse({
         "message": "success"}, status=201)
   
-  
+ 
 @login_required
 def following(request):
+    return render (request, "network/following.html")
+ 
+@login_required
+def load_following(request):
     vusername = request.session.get("uname")
     vthis_user = User.objects.get(username=vusername)
+    vusers_followed_by_this_user = Following.objects.filter(followedby=vthis_user)
+    #have list of users this user following
+    vposts = []
+    for usr in vusers_followed_by_this_user:
+        followeds_posts = Post.objects.filter(author=usr.following)
+        for individual_post in followeds_posts:
+            vposts.append(individual_post)
     
-    list_of_followed_posts = Post.objects.filter(author__following__followedby=vthis_user)
+    
+    vposts.sort(reverse=True, key=lambda item: item.timestamp)
         
-    return displayAllPosts(request, list_of_followed_posts)
+    #list_of_followed_posts = Post.objects.filter(author__following__followedby=vthis_user)
+        
+    # return render (request, "network/following.html", {
+        # "dAllposts" : vposts
+    # })    
+    return JsonResponse([vpost.serialize() for vpost in vposts], safe=False)
+    #return displayAllPosts(request, list_of_followed_posts)

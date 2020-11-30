@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
 	
-	/* var followDiv = document.querySelector('#follow-message');
-	followDiv.style.display = 'none'; */
-
+	
 	
 	followForm = document.querySelector('#follow-form');
 	//No followForm form if user looking at own profile.
@@ -17,12 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 				})
 			})
 			.then(result => {
-				// Print result
-				console.log("result ");
-				console.log(result);
-				console.log("after result ");
-				var followDiv = document.querySelector('#follow-message');
-				followDiv.style.display = 'block';			
+				// Print result					
 				location.reload();
 			})
 			.catch(error => {

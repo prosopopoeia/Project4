@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', function() {
 	//likeButton.addEventListener('click', likePost);
 	initIndexDisplay();
 	
+	
+	
 });//end addEventListener
 
 function initIndexDisplay() {
@@ -109,6 +111,12 @@ function displayPosts(post) {
 	
 	const editDiv = document.createElement('div');
 	
+	const likeButton = document.createElement('button');
+	//const buttonStyle = document.createAttribute('style');
+	//buttonStyle.value = "url(images/up.jpg)"; 
+	//likeButton.setAttributeNode(buttonStyle);
+	likeButton.innerHTML = 'test';
+	
 	const editButton = document.createElement('button');
 	const buttonClick = document.createAttribute('onClick');
 	const srcID = document.createAttribute('id');
@@ -142,7 +150,12 @@ function displayPosts(post) {
 	td1.append(h1);
 	td1.append(div1);
 	td1.append(div2);
-	td1.append(editDiv);
+	td1.append(likeButton);
+	console.log(td1);
+	console.log(likeButton);
+	const thisUsr = document.querySelector('#usr > strong').innerHTML;
+	if (post['author'] === thisUsr)
+		td1.append(editDiv);
 	tr1.append(td1);
 	
 	
