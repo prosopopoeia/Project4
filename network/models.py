@@ -11,6 +11,7 @@ class Post(models.Model):
     subject=models.CharField(max_length=255)
     body=models.TextField(blank=True)
     timestamp=models.DateTimeField(default=datetime.now)
+    likecount = models.IntegerField(default=0)
     
     def serialize(self):
         return {
@@ -18,7 +19,8 @@ class Post(models.Model):
             "author": self.author.username,
             "subject": self.subject,
             "body": self.body,
-            "timestamp": self.timestamp
+            "timestamp": self.timestamp,
+            "likecount": self.likecount
         }
     
 class Following(models.Model):
@@ -27,6 +29,6 @@ class Following(models.Model):
 
 class Likes(models.Model):
     liker=models.ForeignKey(User, on_delete=models.CASCADE)
-    liked=models.ForeignKey(Post, on_delete=models.CASCADE)
-    count = models.IntegerField(default=0)
+    likedpost=models.ForeignKey(Post, on_delete=models.CASCADE)
+    liked=models.BooleanField() 
     

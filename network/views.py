@@ -24,7 +24,6 @@ def index(request):
 def showall(request): 
     vallposts = Post.objects.order_by("-timestamp").all() 
     return JsonResponse([vallpost.serialize() for vallpost in vallposts], safe=False)
-    #return displayAllPosts(request, vallposts) 
     
 def displayAllPosts(request, iterable_collection):
       
@@ -40,30 +39,31 @@ def displayAllPosts(request, iterable_collection):
         "current_user" : request.session.get("uname")
     })
 
-@login_required
-def editpost(request, pid=None):    
-    if not request.user.is_authenticated:
-        return HttpResponseRedirect(reverse("login"))
-    ppost = "no post"
-    if request.method == "POST":
-        data = json.loads(request.body)
-        val = data["feid"]
-        vpost = data["fbody"]
-        ppost = request.body        
-    else:
-        vpost = Post.objects.get(id=pid) 
-    form = NewPostForm()
-    val = request.POST.get("feid")
-    # if val is None:
-        # val = "failure"
+# @login_required
+# def editpost(request, pid=None):    
+    # if not request.user.is_authenticated:
+        # return HttpResponseRedirect(reverse("login"))
+    # ppost = "no post"
+    # if request.method == "POST":
+        # data = json.loads(request.body)
+        # val = data["feid"]
+        # vpost = data["fbody"]
+        # ppost = request.body        
+    # else:
+        # vpost = Post.objects.get(id=pid) 
+    # form = NewPostForm()
+    # val = request.POST.get("feid")
+    # # if val is None:
+        # # val = "failure"
     
     
-    return render(request, "network/edit.html", {    
-        "edit_form" : form,
-        "test" : val,
-        "current_post" : vpost,
-        "clip" : ppost
-    })
+    # return render(request, "network/edit.html", {    
+        # "edit_form" : form,
+        # "test" : val,
+        # "current_post" : vpost,
+        # "clip" : ppost
+    # })
+
 
 def editpostb(request):    
     if not request.user.is_authenticated:
@@ -151,27 +151,64 @@ def newpost(request):
         subject=data["subject"], 
         body=data["body"]) 
     
-    return displayAllPosts(request) 
+    return JsonResponse({"message": "success"}, status=201) 
     
 @login_required
 def likepost(request):
         data = json.loads(request.body)
-        vpostid = data["postid"]
-        likedPost = Post.objects.get(id=vpostid)
-        vusername = request.session.get("uname")
-        vuser = User.objects.get(username=vusername)
-        #if this is the first time the post has been liked...
+        vpostid = data['postid'];        
+        msg2 = data['postid']
         try:
-            like_object = Likes.objects.get(liked=likedPost, liker=vuser)
-            like_object.count += 1
-            like_object.save()
+            liked_post = Post.objects.get(id=vpostid)
         except:
+            msg2 = "fail to get post"
+        vusername = request.session.get('uname')
+        vuser = User.objects.get(username=vusername)
+        
+        msg = 'none'
+        liked = data['isLiked'];    #boolean
+        
+        try:
+            
+            like_object = Likes.objects.get(liker=vuser, likedpost=liked_post)
+            msg2 = like_object.liked
+            msg = "found a like but no further actions"
+            #if user downliked post and has previously upliked
+            if not liked and like_object.liked:
+                liked_post.likecount -= 1
+                like_object.liked = False
+                msg2 = 'just now dislike, earlier, liked'
+                msg = 'has liked, but just now disliked'
+            #if upliked and previously downliked
+            elif liked and not like_object.liked:
+                msg = 'just now liked, now dislikes(bikes)'
+                like_post.likecount += 1
+                like_object.liked = True 
+            like_object.save()
+            
+            #msg = 'bypass'
+        except:
+            msg2 = "excepted it"
+            msg = "exception"
+            doesLike = True
+            if liked:
+                liked_post.likecount += 1
+                msg = 'no like/dis, now likes'
+            else:
+                liked_post.likecount -= 1      
+                doesLike = False
+                msg = 'no like/dis, now dislikes'
             Likes.objects.create(
                 liker=vuser,
-                liked=likedPost,
-                count=1)
+                likedpost=liked_post,
+                liked=doesLike)
+        liked_post.save()       
         
-        return JsonResponse({"message": "liked"}, status=201) 
+        
+        return JsonResponse({"message": msg,
+                             "message2": msg2,
+                                "dcount" : liked_post.likecount
+                            }, status=201) 
     
 @login_required
 def profile_post(request, puser):
@@ -251,10 +288,6 @@ def load_following(request):
     
     vposts.sort(reverse=True, key=lambda item: item.timestamp)
         
-    #list_of_followed_posts = Post.objects.filter(author__following__followedby=vthis_user)
-        
-    # return render (request, "network/following.html", {
-        # "dAllposts" : vposts
-    # })    
+    
     return JsonResponse([vpost.serialize() for vpost in vposts], safe=False)
     #return displayAllPosts(request, list_of_followed_posts)
