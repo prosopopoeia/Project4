@@ -157,47 +157,44 @@ def newpost(request):
 def likepost(request):
         data = json.loads(request.body)
         vpostid = data['postid'];        
-        msg2 = data['postid']
-        try:
-            liked_post = Post.objects.get(id=vpostid)
-        except:
-            msg2 = "fail to get post"
+        
+        liked_post = Post.objects.get(id=vpostid)
         vusername = request.session.get('uname')
+        
+        if liked_post.author.username == vusername:
+            return JsonResponse({"dcount" : liked_post.likecount}, status=401) 
+        
         vuser = User.objects.get(username=vusername)
+        liked = data['isLiked'];    #boolean        
         
-        msg = 'none'
-        liked = data['isLiked'];    #boolean
-        
-        try:
-            
+        try:            
             like_object = Likes.objects.get(liker=vuser, likedpost=liked_post)
-            msg2 = like_object.liked
-            msg = "found a like but no further actions"
+            
             #if user downliked post and has previously upliked
             if not liked and like_object.liked:
-                liked_post.likecount -= 1
-                like_object.liked = False
-                msg2 = 'just now dislike, earlier, liked'
-                msg = 'has liked, but just now disliked'
+                liked_post.likecount -= 2
+                like_object.liked = False                
+                like_object.save()
             #if upliked and previously downliked
             elif liked and not like_object.liked:
-                msg = 'just now liked, now dislikes(bikes)'
-                like_post.likecount += 1
+                liked_post.likecount += 2
                 like_object.liked = True 
-            like_object.save()
-            
-            #msg = 'bypass'
+                like_object.save()
+            elif liked and like_object.liked:
+                liked_post.likecount -= 1
+                like_object.liked = False 
+                like_object.delete()
+            elif not liked and not like_object.liked:
+                liked_post.likecount += 1
+                like_object.liked = True 
+                like_object.delete()
         except:
-            msg2 = "excepted it"
-            msg = "exception"
             doesLike = True
             if liked:
                 liked_post.likecount += 1
-                msg = 'no like/dis, now likes'
             else:
                 liked_post.likecount -= 1      
                 doesLike = False
-                msg = 'no like/dis, now dislikes'
             Likes.objects.create(
                 liker=vuser,
                 likedpost=liked_post,
@@ -205,10 +202,7 @@ def likepost(request):
         liked_post.save()       
         
         
-        return JsonResponse({"message": msg,
-                             "message2": msg2,
-                                "dcount" : liked_post.likecount
-                            }, status=201) 
+        return JsonResponse({"dcount" : liked_post.likecount}, status=201) 
     
 @login_required
 def profile_post(request, puser):

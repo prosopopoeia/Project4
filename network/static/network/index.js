@@ -9,14 +9,9 @@ document.addEventListener('DOMContentLoaded', function() {
 	formDiv.style.display = 'none';
 		
 	var postForm = document.querySelector('#post-form');
-	postForm.addEventListener('submit', createPost);
+	postForm.addEventListener('submit', createPost);	
 	
-	//var likeButton = document.querySelector('#likebutton');
-	//likeButton.addEventListener('click', likePost);
-	initIndexDisplay();
-	
-	
-	
+	initIndexDisplay();	
 });//end addEventListener
 
 function initIndexDisplay() {
@@ -25,8 +20,6 @@ function initIndexDisplay() {
 	fetch('showall')
 	.then(response => response.json())
 	.then(posts => {
-		//var lcounts = 0;		
-		
 		while (posts[index]) {		
 			displayPosts(posts[index++]);
 		}
@@ -42,8 +35,6 @@ function saveEdit(id) {
 	console.log("insaveedit");
 	editedTextBox = document.querySelector(`#ta${id}`);
 	editedText = editedTextBox.value;
-console.log(`body edit : ta${bodyEdit}`);
-console.log(`${editedText}`);
 	fetch('editpost/editpostb', {
 		method: 'PUT',
 		body: JSON.stringify({
@@ -66,14 +57,7 @@ console.log(`${editedText}`);
 }
 
 function editPost(id) {
-	
-console.log(`edit Post function with ${id}`);
-	
-
-	bodyEdit = document.querySelector(`#ape${id}`); //div2 has id: has body in it
-	
-	
-//console.log(bodyEdit);
+	bodyEdit = document.querySelector(`#ape${id}`); 
 	currentBody =  bodyEdit.innerHTML;
 	mtextBox = document.createElement('textArea');
 	
@@ -90,10 +74,7 @@ console.log(`edit Post function with ${id}`);
 	
 	const editClick = document.createAttribute('onClick');
 	editClick.value = `saveEdit(${id})`;
-	editbutton.setAttributeNode(editClick);
-	
-//console.log(`${currentBody} editpost`);
-	
+	editbutton.setAttributeNode(editClick);	
 }
 
 function likedislike(id, liked) {
@@ -111,12 +92,10 @@ function likedislike(id, liked) {
 		
 		console.log(`countess ${result['dcount']}`);
 		countdiv = document.querySelector(`#countid${id}`);
-		countdiv.innerHTML = result['dcount']
-		console.log(`message of sausage: ${result['message']}`);
-		
-		console.log(`msg2: ${result['message2']}`);
+		countdiv.innerHTML = result['dcount']		
 	});
 }
+
 function displayPosts(post) {	
 	postRows = document.querySelector('#target-row');
 	const tr1 = document.createElement('tr');
@@ -133,9 +112,8 @@ function displayPosts(post) {
 	const div1 = document.createElement('div');
 	
 	const editDiv = document.createElement('div');
- /*******************/
+	/*********Dis/Like UI**********/
 	var count = post['likecount'];
-	console.log(post['likecount']);
 	const countDiv = document.createElement('div');
 	const countID = document.createAttribute('id');
 	countID.value = `countid${post['id']}`;
@@ -172,9 +150,7 @@ function displayPosts(post) {
 	likeButtonsDiv.append(likeButton);
 	likeButtonsDiv.append(countDiv);
 	likeButtonsDiv.append(dislikeButton);
-//console.log(likeButton);
-//console.log(dislikeButton);
-/*******************/
+		/*******************/
 	const editButton = document.createElement('button');
 	const buttonClick = document.createAttribute('onClick');
 	const srcID = document.createAttribute('id');
@@ -195,7 +171,6 @@ function displayPosts(post) {
 	const subdiv = document.createElement('div');
 	subdiv.append(anchor);
 	
-	
 	h1.innerHTML = `${post['subject']}`;
 	div1.innerHTML = `Posted by ${subdiv.innerHTML} on ${post['timestamp']}`;
 	
@@ -207,23 +182,18 @@ function displayPosts(post) {
 	
 	td1.append(h1);
 	td1.append(div1);
-	td1.append(div2);
-/*******************/
+	td1.append(div2);		
 	td1.append(likeButtonsDiv);
-//console.log(td1);
-//console.log(likeButtonsDiv);
+	tr1.append(td1);
 	const thisUsr = document.querySelector('#usr > strong').innerHTML;
 	if (post['author'] === thisUsr)
-		td1.append(editDiv);
-	tr1.append(td1);
-	
-	
-	postRows.append(tr1);
-	
+		td1.append(editDiv);	
+	postRows.append(tr1);	
 }
 
 function createPost(event) {
 	event.preventDefault();
+	console.log("at least creates");
 	fetch('newpost', {
 		method: 'POST',
 		body: JSON.stringify({
@@ -232,6 +202,7 @@ function createPost(event) {
 		})
 	})
 	.then(result => {
+		console.log("res");
 		var formDiv = document.querySelector('#post-form-container');
 		formDiv.style.display = 'none';
 		document.querySelector('#sub').value = "";
@@ -243,33 +214,11 @@ function createPost(event) {
 	});
 }
 
-// function likePost(event) {
-	// fetch('likepost',{
-		// method: 'POST',
-		// body: JSON.stringify({
-			// postid : document.querySelector('#likebutton').value
-		// })
-	// })
-	// .then(response => response.json())
-	// .then(result => {
-		// var responseToUser = document.querySelector('#likebutton');
-		// responseToUser.innerHTML = 'liked';
-		// //location.reload();
-	// })
-	// .catch(error => {
-		// console.log('Like Error:', error);  
-	// });
-// }
-
 function toggleForm() {
 	var formDiv = document.querySelector('#post-form-container');
 	var buttonDiv = document.querySelector('#post-option');
 	if(formDiv.style.display == 'none')
-	{
 		formDiv.style.display = 'block';
-		
-	}
-	
 	else
 		formDiv.style.display = 'none';
 }
